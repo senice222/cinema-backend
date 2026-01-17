@@ -1,8 +1,10 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+import { AppModule } from './core/app.module';
 import { ConfigService } from '@nestjs/config';
-import { Logger } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { getCorsConfig } from './core/config';
+import { getValidationPipeConfig } from './core/config/validation-pipe.config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -10,10 +12,9 @@ async function bootstrap() {
   const config = app.get(ConfigService);
   const logger = new Logger();
 
-  app.enableCors({
-    origin: config.getOrThrow<string>('HTTP_CORS'),
-    credentials: true,
-  });
+  app.useGlobalPipes(new ValidationPipe(getValidationPipeConfig()));
+
+  app.enableCors(getCorsConfig(config));
 
   const swaggerConfig = new DocumentBuilder()
     .setTitle('Gateway Service')
@@ -24,7 +25,7 @@ async function bootstrap() {
 
   const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('/docs', app, swaggerDocument, {
-    yamlDocumentUrl: '/openapi.yaml'
+    yamlDocumentUrl: '/openapi.yaml',
   });
 
   const port = config.getOrThrow<number>('HTTP_PORT');

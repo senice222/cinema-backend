@@ -10,6 +10,6 @@ export class AppService {
     return {
       status: 'ok',
       timestamp: new Date().toISOString(),
-    }
+    };
   }
 }
