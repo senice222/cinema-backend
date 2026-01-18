@@ -4,8 +4,6 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  UsePipes,
-  ValidationPipe,
 } from '@nestjs/common';
 import { SendOtpRequest } from './dto';
 

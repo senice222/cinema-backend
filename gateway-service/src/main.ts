@@ -34,6 +34,6 @@ async function bootstrap() {
   await app.listen(port);
 
   logger.log(`Gateway service is running on port ${port}`);
-  logger.log(`Swagger service is running on port ${host}/docs`);
+  logger.log(`Swagger service is running on host ${host}/docs`);
 }
 bootstrap();
